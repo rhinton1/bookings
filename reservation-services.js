@@ -1,8 +1,7 @@
 const moment = require('moment');
 
-exports.CheckDates = (reqCheckinDate, reservations, rooms) => {
+exports.CheckDates = (reqCheckinDate, reqCheckoutDate, reservations, rooms) => {
     var availableRoomsList = [];
-    var nonAvailableRoomList = [];
     var roomsList = [];
 
     rooms.forEach(room => {
@@ -14,12 +13,16 @@ exports.CheckDates = (reqCheckinDate, reservations, rooms) => {
         var reservCheckout = reservation.checkout_date;
         var reservCheckin = reservation.checkin_date;
 
-        if(!moment(reservCheckout).isBefore(reqCheckinDate) || !moment(reservCheckout).isSame(reqCheckinDate)) {
-            nonAvailableRoomList.push(roomID);
-        }
+        // if(!moment(reservCheckout).isBefore(reqCheckinDate) || !moment(reservCheckout).isSame(reqCheckinDate)) {
+        //     nonAvailableRoomList.push(roomID);
+        // }
+
+        if(moment(reservCheckin).isAfter(reqCheckinDate) && moment(reservCheckout).isAfter(reqCheckoutDate) || moment(reservCheckout).isBefore(reqCheckinDate))
+        { availableRoomsList.push(roomID);}
     });
-     availableRoomsList.push(roomsList.filter(i => nonAvailableRoomList.indexOf(i)===-1));
-    
+
+    //var availableRoomsList = roomsList.filter(i => nonAvailableRoomList.indexOf(i)===-1);
+        
     return availableRoomsList;
 }
 
